@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from "@angular/common/http";
 import {
   HttpClientTestingModule,
   HttpTestingController,
@@ -61,10 +62,33 @@ describe("CoursesService", () => {
     });
     const req = httpTestingController.expectOne("/api/courses/12");
     expect(req.request.method).toEqual("PUT");
-    expect(req.request.body.titles.description).toEqual(changes.titles.description);
+    expect(req.request.body.titles.description).toEqual(
+      changes.titles.description
+    );
     req.flush({
       ...COURSES[12],
       ...changes,
+    });
+  });
+
+  it("should give an error if save course fails", () => {
+    const changes: Partial<Course> = {
+      titles: { description: "Testing Course" },
+    };
+    coursesService.saveCourse(12, changes).subscribe(
+      () => {
+        fail("the save course operation should have failed");
+      },
+      (error: HttpErrorResponse) => {
+        expect(error.status).toBe(500);
+      }
+    );
+
+    const req = httpTestingController.expectOne("/api/courses/12");
+    expect(req.request.method).toEqual("PUT");
+    req.flush("Save course failed", {
+      status: 500,
+      statusText: "Internal Server Error",
     });
   });
 
