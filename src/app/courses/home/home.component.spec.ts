@@ -4,6 +4,7 @@ import { By } from "@angular/platform-browser";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { of } from "rxjs";
 import { setupCourses } from "../common/setup-test-data";
+import { click } from "../common/test-utils";
 import { CoursesModule } from "../courses.module";
 import { CoursesService } from "../services/courses.service";
 import { HomeComponent } from "./home.component";
@@ -15,10 +16,10 @@ describe("HomeComponent", () => {
   let coursesService: any;
 
   const beginnerCourses = setupCourses().filter(
-    (course) => (course.category === "BEGINNER")
+    (course) => course.category === "BEGINNER"
   );
   const advancedCourses = setupCourses().filter(
-    (course) => (course.category === "ADVANCED")
+    (course) => course.category === "ADVANCED"
   );
 
   beforeEach(waitForAsync(() => {
@@ -68,6 +69,17 @@ describe("HomeComponent", () => {
   });
 
   it("should display advanced courses when tab clicked", () => {
-    pending();
+    coursesService.findAllCourses.and.returnValue(of(setupCourses()));
+    fixture.detectChanges();
+    const tabs = debugElement.queryAll(By.css(".mdc-tab"));
+    const advancedTab = tabs[1];
+    click(advancedTab);
+    fixture.detectChanges();
+    const cardTitles = debugElement.queryAll(By.css(".mat-card-title"));
+
+    expect(cardTitles.length).toBeGreaterThan(0, "Could not find card titles");
+    expect(cardTitles[0].nativeElement.textContent).toContain(
+      "Angular Security Course"
+    );
   });
 });
