@@ -1,5 +1,5 @@
-import { CalculatorService } from "./calculator.service";
 import { TestBed } from "@angular/core/testing";
+import { CalculatorService } from "./calculator.service";
 import { LoggerService } from "./logger.service";
 
 describe("CalculatorService", () => {
