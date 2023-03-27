@@ -1,4 +1,4 @@
-import { fakeAsync, flush } from "@angular/core/testing";
+import { fakeAsync, flush, flushMicrotasks } from "@angular/core/testing";
 
 describe("Async Testing Examples", () => {
   it("Asynchronous test example with Jasmine done()", (done: DoneFn) => {
@@ -26,19 +26,20 @@ describe("Async Testing Examples", () => {
     expect(test).toBeTruthy();
   }));
 
-  fit("Asynchronous test example - plain Promise", () => {
+  it("Asynchronous test example - plain Promise", fakeAsync(() => {
     let test = false;
     console.log("Creating promise");
     Promise.resolve()
       .then(() => {
         console.log("Promise first then() evaluated successfully");
+        test = true;
         return Promise.resolve();
       })
       .then(() => {
         console.log("Promise second then() evaluated successfully");
-        test = true;
       });
     console.log("Running test assertions");
+    flushMicrotasks();
     expect(test).toBeTruthy();
-  });
+  }));
 });

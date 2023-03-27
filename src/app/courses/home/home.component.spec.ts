@@ -1,5 +1,5 @@
 import { DebugElement } from "@angular/core";
-import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
+import { ComponentFixture, flushMicrotasks, TestBed, waitForAsync } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { of } from "rxjs";
@@ -68,10 +68,10 @@ describe("HomeComponent", () => {
     expect(tabs.length).toBe(2, "Unexpected number of tabs found");
   });
 
-  xit("should display advanced courses when tab clicked", (done: DoneFn) => {
+  fit("should display advanced courses when tab clicked", (done: DoneFn) => {
     coursesService.findAllCourses.and.returnValue(of(setupCourses()));
     fixture.detectChanges();
-    const tabs = debugElement.queryAll(By.css(".mdc-tab"));
+    const tabs = debugElement.queryAll(By.css(".mdc-tab .mdc-tab-indicator"));
     const advancedTab = tabs[1];
     click(advancedTab);
 
