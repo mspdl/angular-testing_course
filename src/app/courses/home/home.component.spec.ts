@@ -1,5 +1,11 @@
 import { DebugElement } from "@angular/core";
-import { ComponentFixture, flushMicrotasks, TestBed, waitForAsync } from "@angular/core/testing";
+import {
+  ComponentFixture,
+  fakeAsync,
+  flush,
+  TestBed,
+  waitForAsync,
+} from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { of } from "rxjs";
@@ -68,26 +74,22 @@ describe("HomeComponent", () => {
     expect(tabs.length).toBe(2, "Unexpected number of tabs found");
   });
 
-  xit("should display advanced courses when tab clicked", (done: DoneFn) => {
+  it("should display advanced courses when tab clicked", fakeAsync(() => {
     coursesService.findAllCourses.and.returnValue(of(setupCourses()));
     fixture.detectChanges();
-    const tabs = debugElement.queryAll(By.css(".mdc-tab .mdc-tab-indicator"));
+
+    const tabs = debugElement.queryAll(By.css(".mdc-tab"));
     const advancedTab = tabs[1];
     click(advancedTab);
-
     fixture.detectChanges();
 
-    setTimeout(() => {
-      const cardTitles = debugElement.queryAll(By.css("mat-card-title"));
+    flush();
+    fixture.detectChanges();
 
-      expect(cardTitles.length).toBeGreaterThan(
-        0,
-        "Could not find card titles"
-      );
-      expect(cardTitles[0].nativeElement.textContent).toContain(
-        "Angular Security Course"
-      );
-        done();
-      }, 2000);
-  });
+    const cardTitles = debugElement.queryAll(By.css("mat-card-title"));
+    expect(cardTitles.length).toBeGreaterThan(0, "Could not find card titles");
+    expect(cardTitles[0].nativeElement.textContent).toContain(
+      "Angular Security Course"
+    );
+  }));
 });
