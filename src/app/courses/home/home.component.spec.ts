@@ -100,6 +100,7 @@ describe("HomeComponent", () => {
     const tabs = debugElement.queryAll(By.css(".mdc-tab"));
     const advancedTab = tabs[1];
     click(advancedTab);
+
     fixture.detectChanges();
 
     fixture.whenStable().then(() => {
